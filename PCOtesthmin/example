@@ -1,5 +1,17 @@
 
-# Generate a sample of size '100' for each of the test laws
+# Generate a sample of size '100' for each of the test laws and save the result in a file named ech_...
 
 
+gen_N_ech(n=100, d=1, N=1)
 
+
+# Generate the set of nh=10 possible h values and save the result in a file named H
+# For a Gaussian kernel the recommanded value for hmin is hmin = sqrt(2*pi)/n
+
+generate_H(d=1, nh=10, hmin_term = sqrt(2*pi)/100)
+
+
+# Then the PCO criterion can be computed for one of these samples
+
+load(file='H')
+PCO_L2_loi_ech(n=100, d=1, N=1, H=H, no_loi = 1, no_ech = 1, K_name = 'gaussian')
