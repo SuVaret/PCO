@@ -1,0 +1,12 @@
+Package: PCOtesthmin
+Type: Package
+Title: PCO with hmin in parameter 
+Version: 2.0
+Date: 2021-01-09
+Author: S. Varet
+Maintainer: S.Varet <suzanne.varet@math.u-psud.fr>
+Description: Computes PCO criterion for 1D and multivariate data.
+Depends: R (>= 3.5.0), RcppEigen (>= 0.3.3.4.0), randtoolbox (>= 1.17.1)
+License: CeCILL (=2.1)
+Imports: Rcpp (>= 0.12.17)
+LinkingTo: Rcpp, RcppEigen
