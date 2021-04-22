@@ -1792,7 +1792,7 @@ compute_N_den <- function(n, d, N, nQMC, maxH){
 #' @useDynLib PCOtesthmin
 #' @importFrom Rcpp sourceCpp
 #' @export
-generate_H(d, nh, hmin_term){
+generate_H <- function(d, nh, hmin_term){
   if (d==1){
     Htmp <- sobol(n = nh - 2, dim = 1)
     # hmin <- eval(hmin_s)
