@@ -1,0 +1,6 @@
+
+# Generate a sample of size '100' of the univariate gaussian law
+
+x_i <- generate_ech_1D('Gauss', ech_size = 100)
+
+
