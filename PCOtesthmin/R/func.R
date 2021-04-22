@@ -1777,9 +1777,85 @@ compute_N_den <- function(n, d, N, nQMC, maxH){
 
 
 
-
-
-
+#' Generates the file that contains all h values
+#'
+#' \code{generate_H} Generates the file that contains all h values
+#'
+#' @param d dimension
+#' @param nh number of h values
+#' @param hmin_term the hmin value in 1D, and the diagonal term of hmin for multivariate case
+#'
+#' @return Generates the file that contains all h values. In multivariate case, the output is a list of vectors
+#' that are later transformated (in the PCO_L2_loi_ech function) to obtain full h matrices.
+#' Please note that hmin is not a parameter for epanechnikov and biweight kernel
+#'
+#' @useDynLib PCOtesthmin
+#' @importFrom Rcpp sourceCpp
+#' @export
+generate_H(d, nh, hmin_term){
+  if (d==1){
+    Htmp <- sobol(n = nh - 2, dim = 1)
+    # hmin <- eval(hmin_s)
+    Htmp <- Htmp * (1 - hmin_term) + hmin_term
+    H <- c(hmin_term, Htmp, 1)
+    H <- sort(H)
+    # print(sprintf("hmin_s = %s", hmin_s))
+    # print(sprintf("hmin = %f", hmin))
+    
+    save(list=c('H'), file = "H")
+    
+  }else{
+    
+      H <- list()
+      
+      
+      # hmin_term correspond à 1 terme de la diagonale qui sera répété d fois
+      
+      # suite de sobol ramenée à l'interval [1/(||K||_inf/n^(1/d)); 1]^d
+      # avec en plus une matrice diagonale de determiant égal à ||K||_inf/n
+      
+      normesupK <- 1 / sqrt(2*pi) # gaussian kernel
+      
+      Htmp <- randtoolbox::sobol(n = nh - 1, dim = d) # nh-1 vecteurs de dimension d
+      # cst_diag <- sqrt(2 * pi) * n ^ (1 / d)
+      # hmin_diag_term <- eval(hmin_s)
+      # hmin_diag_term <- hmin_term
+      Htmp <- Htmp * (1 - hmin_term) + hmin_term
+      Htmp <- rbind(rep(hmin_term, times = d), Htmp)
+      # H_vect <- list()
+      for (i in 1:nh){
+        # H[ , , i] <- diag(Htmp[i, ])
+        # H[[i]] <- diag(Htmp[i, ]) # potentiellement peut etre remplace par une liste de vecteur au lieu d'une liste de matrices
+        # H_vect[[i]] <- Htmp[i, ]
+        H[[i]] <- Htmp[i, ]
+      }
+      
+      # produit des éléments de la diagonale de h
+      hi_prod <- apply(Htmp, 1, prod)
+      hi_prod_indexsorted <- sort(hi_prod, index.return=TRUE)$ix
+      
+      hi_prod_sorted <- sort(hi_prod)
+      
+      # hmin <- H[ , , hi_prod_indexsorted[1]]
+      hmin <- H[[hi_prod_indexsorted[1]]]
+      
+      # H est trié en fonction du produit des éléments diagonaux de chaque matrice (des matrices diagonales)
+      H <- H[hi_prod_indexsorted]
+      # H_vect <- H_vect[hi_prod_indexsorted]
+      Htmp_sorted <- Htmp[hi_prod_indexsorted]
+      
+      # print(paste('min(H) = ', min(hi_prod)))
+      # print(paste('||K||_inf/n = 1/hmin_diag_term^d = ', 1/hmin_diag_term^d))
+      # #print(paste('det(hmin) = ', det(hmin)))
+      # print(paste('1/n = ', 1/n))
+      
+      
+      save(list=c('H'), file = "H")
+      
+    
+    
+  }
+}
 
 
 
