@@ -2241,7 +2241,7 @@ compute_risks_Lp <- function(p, n, d, N, nQMC, nh, K_name = "gaussian"){
     for (no_ech in 1:N){
       
       # on charge la vraie densite
-      f_file_name <- sprintf('../f_d%iN%in%inloc%i_%s_%i', d, N, n, nQMC, nom_loi_abr[no_loi], no_ech)
+      f_file_name <- sprintf('f_d%iN%in%inloc%i_%s_%i', d, N, n, nQMC, nom_loi_abr[no_loi], no_ech)
       if (file.exists(f_file_name)){
         load(f_file_name)
         # print('f_file loaded')
@@ -2387,7 +2387,7 @@ compute_risks_Lp <- function(p, n, d, N, nQMC, nh, K_name = "gaussian"){
 #' @useDynLib PCOtesthmin
 #' @importFrom Rcpp sourceCpp
 #' @export
-compute_risks_Lp_loi_ech <- function(p, n, d, nQMC, nh, no_ech, no_loi){
+compute_risks_Lp_loi_ech <- function(p, n, d, nQMC, nh, no_ech, no_loi, N){
   print('calcul du risque')
   nc <- 1
   
@@ -2432,7 +2432,7 @@ compute_risks_Lp_loi_ech <- function(p, n, d, nQMC, nh, no_ech, no_loi){
   # for (no_ech in 1:N){
   
   # on charge la vraie densite
-  f_file_name <- sprintf('../f_d%iN%in%inloc%i_%s_%i', d, N, n, nQMC, nom_loi_abr[no_loi], no_ech)
+  f_file_name <- sprintf('f_d%iN%in%inloc%i_%s_%i', d, N, n, nQMC, nom_loi_abr[no_loi], no_ech)
   if (file.exists(f_file_name)){
     
     # print('f_file loaded')
@@ -2458,8 +2458,11 @@ compute_risks_Lp_loi_ech <- function(p, n, d, nQMC, nh, no_ech, no_loi){
           # risk <- risque_Lp(p, f[[1]]$y, x_i, C, f[[1]]$x, hopt_c, a, b) # risque avec noyau gaussien
           risk <- risque_Lp(p, f[[1]]$y, x_i, f[[1]]$x, hopt_c, a, b) # risque avec noyau gaussien
           # no_c_opt[no_ech, no_loi] <- which.min(risk)
-          risks[, no_ech, no_loi] <- risk
+          # risks[, no_ech, no_loi] <- risk
           # dLp_fhmin[, no_ech, no_loi] <- density_hat_PCO[[nom_loi[no_loi]]]$perte[no_hopt_c]
+          density_hat_PCO[[nom_loi[no_loi]]]$risk <- risk
+          
+          save(list=c('density_hat_PCO', 'PCO_file_name'), file = PCO_file_name)
           
         }else{
           # print("d != 1")

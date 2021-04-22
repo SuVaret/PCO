@@ -11,7 +11,25 @@ gen_N_ech(n=100, d=1, N=1)
 generate_H(d=1, nh=10, hmin_term = sqrt(2*pi)/100)
 
 
-# Then the PCO criterion can be computed for one of these samples
+# Then the PCO criterion can be computed for all h values and one of these samples. 
+# The results are stored in a file named PCO_L2...
 
 load(file='H')
 PCO_L2_loi_ech(n=100, d=1, N=1, H=H, no_loi = 1, no_ech = 1, K_name = 'gaussian')
+
+
+# To compute the risk, we need the true density function. 
+# The following instruction generates one file for each law and each sample which contains
+# the nQMC values of the density function 
+
+compute_N_den(n=100, d=1, N=1, nQMC = 1000, maxH = 1)
+
+# Finally one can compute the L2 risk for all laws and all samples with the compute_risks_Lp function.
+# all the results are stored in a file named risk...
+
+compute_risks_Lp(p=2, n = 100, d = 1, N = 1, nQMC = 1000, nh = 10, K_name = 'gaussian')
+
+# Or one can compute the L2 risk for one of the law and one of the sample
+# In that case the results are stored in the corresponding file of PCO results in the variable density_hat_PCO $risk
+
+compute_risks_Lp_loi_ech(p=2, n = 100, d = 1, N = 1, nQMC = 1000, nh = 10, no_ech = 1, no_loi = 1)
